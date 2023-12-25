@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ide-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ide-manager
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8081'
+        prometheus.io/path: '/actuator/prometheus'
+        update: df49e8eddce2026a6e71a50bad72cd48
+      labels:
+        app: ide-manager
+    spec:
+      serviceAccountName: cluster-admin-sa
+      imagePullSecrets:
+      - name: harbor-registry-secret
+      containers:
+      - name: ide-manager
+        image: amdp-registry.skamdp.org/mydev-ywyi/ide-manager:1.0.0
+        imagePullPolicy: Always
+        securityContext:
+            runAsUser: 0
+            privileged: true
+        env:
+        - name: LOGGING_LEVEL
+          value: DEBUG
+        - name: DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: datasource-secrets
+              key: database-url
+        - name: DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: datasource-secrets
+              key: database-username
+        - name: DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: datasource-secrets
+              key: database-password

@@ -1,0 +1,87 @@
+server:
+  port: 8080
+logging:
+  level:
+    ROOT:
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: ide-operator
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    title: Devplace manager API
+    description: This Application manages and connects a Container-based remote development environment configuration.
+  swagger-ui:
+    path: /swagger-ui.html
+
+---
+server:
+  port: 8080
+  logging:
+    level: DEBUG
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  jpa:
+    open-in-view: true
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      #ddl-auto: create
+      ddl-auto: update
+      #ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        #physical-strategy: cnadata.outbox.util.DBLowerCaseNamingStrategy
+        #physical-strategy: cnadata.outbox.util.DBUpperCaseNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  datasource:
+    url: jdbc:mariadb://database-1.c7vhecmevmrc.ap-northeast-2.rds.amazonaws.com/mydevdb?allowMultiQueries=true
+    username: admin
+    password: ywyi1004
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      idle-timeout: 300
+      max-lifetime: 300
+      maximum-pool-size: 20
+
+
+---
+server:
+  port: 8080
+  logging:
+    level: INFO
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    open-in-view: true
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      #ddl-auto: create
+      ddl-auto: update
+      #ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        #physical-strategy: cnadata.outbox.util.DBLowerCaseNamingStrategy
+        #physical-strategy: cnadata.outbox.util.DBUpperCaseNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      idle-timeout: 300
+      max-lifetime: 300
+      maximum-pool-size: 20
