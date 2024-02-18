@@ -24,6 +24,3 @@ target
 hs_err_pid*
 replay_pid*
 
-env.properties
-*.yaml
-*.sh
