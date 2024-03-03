@@ -28,6 +28,11 @@ public class SendWithRequestHeader {
         this.restTemplate = restTemplate;
     }
 
+    public enum ACTION {
+        DELETE_PATH,
+        DELETE_STRING,
+        INSERT_PATH
+    }
 
     /**
      * 지정된 도메인에 HTTP 요청을 전송하고, 응답을 Class<T> 또는 ParameterizedTypeReference<T> 타입으로 반환한다.
@@ -46,12 +51,14 @@ public class SendWithRequestHeader {
             String requestParameters,
             HttpMethod method,
             HttpServletRequest request,
+            String deletePath,
             Object body,
             Object responseType) {
 
         HttpEntity<Object> entity = createHttpEntity(request, body);
 
-        String url = domainInfo.getDomainURL() + request.getRequestURI();
+        //String url = domainInfo.getDomainURL() + request.getRequestURI();
+        String url = domainInfo.getDomainURL() + modifyRequestURI(request.getRequestURI(), deletePath, ACTION.DELETE_PATH);
         if (requestParameters != null && !requestParameters.isEmpty()) {
             url += "?" + requestParameters;
         }
@@ -82,12 +89,14 @@ public class SendWithRequestHeader {
             String requestParameters,
             HttpMethod method,
             HttpServletRequest request,
+            String deletePath,
             Object body,
             Object responseType) {
 
         HttpEntity<Object> entity = createHttpEntity(request, body);
 
-        String url = domainInfo.getDomainURL() + request.getRequestURI();
+        //String url = domainInfo.getDomainURL() + request.getRequestURI();
+        String url = domainInfo.getDomainURL() + modifyRequestURI(request.getRequestURI(), deletePath, ACTION.DELETE_PATH);
         if (requestParameters != null && !requestParameters.isEmpty()) {
             url += "?" + requestParameters;
         }
@@ -121,5 +130,52 @@ public class SendWithRequestHeader {
         }
         return new HttpEntity<>(body, headers);
     }
+
+
+    // 주어진 요구사항에 따라 requestURI를 수정하는 함수
+    public String modifyRequestURI(String requestURI, String modifyString, ACTION action) {
+
+        switch (action) {
+            case DELETE_PATH:
+                return deletePath(requestURI, modifyString);
+            case DELETE_STRING:
+                return deleteString(requestURI, modifyString);
+            case INSERT_PATH:
+                return insertPath(requestURI, modifyString);
+            default:
+                throw new IllegalArgumentException("Unsupported action type");
+        }
+    }
+
+    private static String deletePath(String requestURI, String pathToDelete) {
+        // Normalize pathToDelete to remove leading and trailing slashes
+        String normalizedPathToDelete = pathToDelete.replaceAll("^/|/$", "");
+        String[] segments = requestURI.split("/");
+        StringBuilder modifiedURI = new StringBuilder();
+
+        boolean found = false;
+        for (String segment : segments) {
+            if (!segment.equals(normalizedPathToDelete) && !segment.isEmpty()) {
+                if (found || !requestURI.contains("/" + normalizedPathToDelete + "/")) {
+                    modifiedURI.append("/").append(segment);
+                }
+            } else {
+                found = true; // Mark as found to delete only the first occurrence
+            }
+        }
+
+        return modifiedURI.toString();
+    }
+
+    private static String deleteString(String requestURI, String stringToDelete) {
+        return requestURI.replace(stringToDelete, "");
+    }
+
+    private static String insertPath(String requestURI, String pathToInsert) {
+        // Normalize pathToInsert to ensure it doesn't end with a slash
+        String normalizedPathToInsert = pathToInsert.replaceAll("^/|/$", "");
+        return "/" + normalizedPathToInsert + requestURI;
+    }
+
 
 }

@@ -12,11 +12,11 @@ spring:
 
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /ide-manager/api-docs
     title: Devplace manager API
     description: This Application manages and connects a Container-based remote development environment configuration.
   swagger-ui:
-    path: /swagger-ui.html
+    path: /ide-manager/swagger-ui.html
 
 ---
 server:

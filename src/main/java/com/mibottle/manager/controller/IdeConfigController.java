@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/ide-configs")
+@RequestMapping("/ide-manager/api/ide-configs")
 @Tag(name = "IdeConfigController", description = "IDE VSCODE & CLI 컨테이너를 생성하고 관리하는 역할 수행")
 public class IdeConfigController {
 
@@ -29,6 +29,8 @@ public class IdeConfigController {
     private final IdeWorkspaceService ideWorkspaceService;
 
     private final SendWithRequestHeader sendWithRequestHeader;
+
+    private final String DELETE_PATH = "ide-manager";
 
     @Autowired
     public IdeConfigController(IdeConfigService ideConfigService, IdeDomainService ideDomainService, IdeWorkspaceService ideWorkspaceService, SendWithRequestHeader sendWithRequestHeader) {
@@ -54,7 +56,7 @@ public class IdeConfigController {
 
         String requestParams = String.format("namespace=%s&name=%s", namespace, name);
         ResponseEntity<String> response = sendWithRequestHeader.sendForStringResponse(
-                domainOpt.get(), requestParams, HttpMethod.POST, request, ideConfigSpec, String.class);
+                domainOpt.get(), requestParams, HttpMethod.POST, request, DELETE_PATH, ideConfigSpec, String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             Optional<IdeWorkspace> workspaceOpt = ideWorkspaceService.getIdeWorkspaceByName(workspaceName);
@@ -116,6 +118,7 @@ public class IdeConfigController {
                 requestParams,
                 HttpMethod.GET,
                 request,
+                DELETE_PATH,
                 null, // GET 요청의 경우, 바디는 null
                 new ParameterizedTypeReference<List<IdeConfig>>() {});
 
@@ -148,6 +151,7 @@ public class IdeConfigController {
                 requestParams,
                 HttpMethod.GET,
                 request,
+                DELETE_PATH,
                 null, // GET 요청의 경우, 바디는 null
                 new ParameterizedTypeReference<List<IdeConfigSpec>>() {});
 
@@ -184,6 +188,7 @@ public class IdeConfigController {
                 requestParams,
                 HttpMethod.GET,
                 request,
+                DELETE_PATH,
                 null, // GET 요청의 경우, 바디는 null
                 new ParameterizedTypeReference<List<IdeConfig>>() {});
 
@@ -203,6 +208,7 @@ public class IdeConfigController {
                 requestParams,
                 HttpMethod.PUT,
                 request,
+                DELETE_PATH,
                 existingConfigSpec,
                 IdeConfigSpec.class);
 
@@ -242,6 +248,7 @@ public class IdeConfigController {
                 requestParams,
                 HttpMethod.DELETE,
                 request,
+                DELETE_PATH,
                 null, // DELETE 요청의 경우, 바디는 null
                 String.class);
 

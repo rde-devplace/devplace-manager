@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/domains")
+@RequestMapping("/ide-manager/api/domains")
 @Tag(name = "IdeDomainController", description = "IDE VSCODE & CLI 접속을 위한 Remote Development Env. 접속 도메일을 관리")
 public class IdeDomainController {
 

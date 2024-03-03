@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/domain")
+@RequestMapping("/ide-manager/api/domain")
 public class IdeRedirectController {
 
     private final IdeWorkspaceService ideWorkspaceService;

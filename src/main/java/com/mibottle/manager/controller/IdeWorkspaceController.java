@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/workspaces")
+@RequestMapping("/ide-manager/api/workspaces")
 @Tag(name = "IdeWorkspaceController", description = "IDE Container를 생성하고 관리하기 위한 Developer를 위한 Workspace를 생성 및 관리")
 public class IdeWorkspaceController {
 
