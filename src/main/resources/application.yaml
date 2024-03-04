@@ -45,7 +45,7 @@ spring:
   datasource:
     url: jdbc:mariadb://database-1.c7vhecmevmrc.ap-northeast-2.rds.amazonaws.com/mydevdb?allowMultiQueries=true
     username: admin
-    password: ywyi1004
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
     hikari:
       idle-timeout: 300
